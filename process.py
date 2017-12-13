@@ -94,14 +94,14 @@ def process(filename, db):
                 flow_end(db, m2.group)
                 next
 
-def output_to_csv(dir, db):
-    with open(dir+"/session.csv", "w+") as f:
+def output_to_csv(filename, db, table):
+    with open(filename, "w") as f:
         writer = csv.writer(f)
         cur = db.cursor()
-        cur.execute("SELECT * FROM session")
+        cur.execute("SELECT * FROM " + table)
         for row in cur.fetchall():
             writer.writerow(row)
-    
+
 if __name__ == '__main__':
     VERSION = "0.1"
     usage = "Usage: python " + sys.argv[0] + " -i <input_dir> -o output_dir"
@@ -124,5 +124,6 @@ if __name__ == '__main__':
         filename = os.path.join(options.input, file)
         process(filename, db)
 
-    output_to_csv(options.output, db)
+    output_to_csv(options.output+"/session.csv", db, "session")
+    output_to_csv(options.output+"/flow.csv", db, "flow")
     disconnect(db)
