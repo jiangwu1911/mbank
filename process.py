@@ -4,6 +4,8 @@ import thread
 import sqlite3
 import re
 import datetime
+from optparse import OptionParser
+import sys
 
 HOST = '0.0.0.0'
 PORT = 5000
@@ -97,6 +99,20 @@ def process(conn, addr):
 
 
 if __name__ == '__main__':
+    VERSION = "0.1"
+    usage = "Usage: python " + sys.argv[0] + " -i <input_dir> -o output_file"
+    parser = OptionParser(usage, version = VERSION)
+
+    parser.add_option("-i", "--input", action="store", type="string", dest="input", 
+                      help="Input dir.")
+    parser.add_option("-o", "--output", action="store", type="string", dest="output",
+                      help="Output file.")
+
+    options, args = parser.parse_args()
+    if options.input==None or options.output==None:
+        print usage
+        sys.exit(-1)
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind((HOST, PORT))
