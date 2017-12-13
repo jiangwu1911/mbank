@@ -6,11 +6,11 @@ import re
 import datetime
 import sys
 import os
+import csv
 from optparse import OptionParser
 
 HOST = '0.0.0.0'
 PORT = 5000
-OUTPUT = "./output.txt"
 
 def connect_db():
     return sqlite3.connect('mbank.db')
@@ -93,16 +93,24 @@ def process(filename, db):
             if m2:
                 flow_end(db, m2.group)
                 next
+
+def output_to_csv(dir, db):
+    with open(dir+"/session.csv", "w+") as f:
+        writer = csv.writer(f)
+        cur = db.cursor()
+        cur.execute("SELECT * FROM session")
+        for row in cur.fetchall():
+            writer.writerow(row)
     
 if __name__ == '__main__':
     VERSION = "0.1"
-    usage = "Usage: python " + sys.argv[0] + " -i <input_dir> -o output_file"
+    usage = "Usage: python " + sys.argv[0] + " -i <input_dir> -o output_dir"
     parser = OptionParser(usage, version = VERSION)
 
     parser.add_option("-i", "--input", action="store", type="string", dest="input", 
                       help="Input dir.")
     parser.add_option("-o", "--output", action="store", type="string", dest="output",
-                      help="Output file.")
+                      help="Output dir..")
 
     options, args = parser.parse_args()
     if options.input==None or options.output==None:
@@ -116,4 +124,5 @@ if __name__ == '__main__':
         filename = os.path.join(options.input, file)
         process(filename, db)
 
+    output_to_csv(options.output, db)
     disconnect(db)
