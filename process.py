@@ -4,8 +4,9 @@ import thread
 import sqlite3
 import re
 import datetime
-from optparse import OptionParser
 import sys
+import os
+from optparse import OptionParser
 
 HOST = '0.0.0.0'
 PORT = 5000
@@ -13,7 +14,6 @@ OUTPUT = "./output.txt"
 
 def connect_db():
     return sqlite3.connect('mbank.db')
-    #return sqlite3.connect(':memory:')
 
 def disconnect(conn):
     conn.close()
@@ -36,6 +36,8 @@ def format_time(stime):
 
 def flow_begin(db, m):
     cur = db.cursor()
+    cur.execute("PRAGMA synchronous = OFF")
+    cur.execute("PRAGMA journal_mode = memory")
     cur.execute("INSERT INTO flow VALUES('%s', '%s', '%s', '%s', '%s', %d, '%s')" %
                 (m(2), m(3), m(5), format_time(m(1)), '', 0, ''))
     # if already have session begin record, will raise exception
@@ -48,6 +50,8 @@ def flow_begin(db, m):
 
 def flow_end(db, m):
     cur = db.cursor()
+    cur.execute("PRAGMA synchronous = OFF")
+    cur.execute("PRAGMA journal_mode = memory")
     cur.execute("SELECT start FROM flow WHERE sid='%s' AND flow='%s'" % (m(2), m(5)))
     row = cur.fetchone()
     if row:
@@ -71,33 +75,25 @@ def flow_end(db, m):
                     % (format_time(m(1)), duration, m(2)))
     else:
         print "Found a flow end without session start record, sid=%s, flow=%s" % (m(2), m(5))
-
     db.commit()
 
-def process(conn, addr):
-    db = connect_db()
-    create_table(db)
-
+def process(filename, db):
     p_date = '(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) '
     p_session = '\[sid:(.*),cst:(.*),hst:(.*)\] '
     r_flow_begin = re.compile(p_date + p_session + 'begin flow (.*)')
     r_flow_end = re.compile(p_date + p_session + 'flow (.*) end (.*)')
 
-    incoming = conn.makefile('r', 0)
-    for line in incoming:
-        m1 = re.search(r_flow_begin, line)
-        if m1: 
-            flow_begin(db, m1.group)
-            next
-        m2 = re.search(r_flow_end, line)
-        if m2:
-            flow_end(db, m2.group)
-            next
-
-    conn.close()
-    disconnect(db)
-
-
+    with open(filename) as f:
+        for line in f:
+            m1 = re.search(r_flow_begin, line)
+            if m1: 
+                flow_begin(db, m1.group)
+                next
+            m2 = re.search(r_flow_end, line)
+            if m2:
+                flow_end(db, m2.group)
+                next
+    
 if __name__ == '__main__':
     VERSION = "0.1"
     usage = "Usage: python " + sys.argv[0] + " -i <input_dir> -o output_file"
@@ -113,11 +109,11 @@ if __name__ == '__main__':
         print usage
         sys.exit(-1)
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind((HOST, PORT))
-    sock.listen(5)   
+    db = connect_db()
+    create_table(db)
 
-    while 1:
-        conn, addr = sock.accept()
-        thread.start_new_thread(process, (conn, addr))
+    for file in os.listdir(options.input):
+        filename = os.path.join(options.input, file)
+        process(filename, db)
+
+    disconnect(db)
