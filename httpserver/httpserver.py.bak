@@ -1,0 +1,71 @@
+from bottle import route, run, request, Bottle
+from paste import httpserver
+import time
+import socket
+import json
+import threading
+from Queue import *
+
+OUTPUT_FILE="./bsb_request.log"
+SERVER_IP="192.168.206.226"
+SERVER_PORT=5555
+
+app = Bottle()
+
+def get_hostname():
+    myname = socket.getfqdn(socket.gethostname())
+    return myname
+
+def get_ipaddress():
+    myname = socket.getfqdn(socket.gethostname())
+    myaddr = socket.gethostbyname(myname)
+    return myaddr
+
+def get_time_stamp():
+    ct = time.time()
+    local_time = time.localtime(ct)
+    data_head = time.strftime("%Y-%m-%d %H:%M:%S", local_time)
+    data_secs = (ct - long(ct)) * 1000
+    time_stamp = "%s.%03d" % (data_head, data_secs)
+    return time_stamp
+
+def send_message(msg):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_address = (SERVER_IP, SERVER_PORT)
+    try:
+        sock.connect(server_address)
+        sock.send(msg)
+    except socket.errno, e:
+        print "Socket error: %s" % str(e)
+    finally:
+        sock.close()
+
+
+hostname = get_hostname()
+ipaddress = get_ipaddress()
+
+@app.route('/', method='POST')
+def index():
+    with open(OUTPUT_FILE, "a") as f:
+        #for key in request.headers.keys():
+        #    print "%s: %s" % (key, request.headers[key]) 
+
+        dt =  get_time_stamp()
+        body = request._get_body_string()
+
+        message = {}
+        message['timestamp'] = get_time_stamp()
+        message['hostname'] = hostname
+        message['source'] = ipaddress
+        message['message'] = body
+    
+        msg = json.dumps(message, ensure_ascii=False)
+        t = threading.Thread(target=send_message, args=(msg,))
+        t.start()
+
+        #f.write(msg)
+        #f.write("\n")
+
+httpserver.serve(app, host="0.0.0.0", port=8080, threadpool_workers=30, request_queue_size=20)
+
+#run(host='0.0.0.0', port=8080, debug=True)
