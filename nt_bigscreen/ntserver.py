@@ -1,6 +1,6 @@
 # coding: utf-8
 import bottle
-from bottle import route, run, request, Bottle
+from bottle import route, run, request, response, Bottle
 from paste import httpserver
 import time
 import socket
@@ -81,6 +81,24 @@ class Watcher():
             pass
 
 
+class EnableCors(object):
+    name = 'enable_cors'
+    api = 2
+
+    def apply(self, fn, context):
+        def _enable_cors(*args, **kwargs):
+            # set CORS headers
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
+            response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+
+            if bottle.request.method != 'OPTIONS':
+                # actual request; reply with the actual response
+                return fn(*args, **kwargs)
+
+        return _enable_cors
+
+
 def generate_test_traffic_data():
     engine = create_db_engine()
     Session = sessionmaker(engine)
@@ -104,6 +122,7 @@ if __name__ == "__main__":
     bottle.ERROR_PAGE_TEMPLATE = """{"error": {"message": "{{e.body}}", "code": "{{e._status_code}}"}}"""
     app = Bottle()
     install_db_plugin(app)
+    app.install(EnableCors())
     controller.define_route(app)
 
     # 生成测试流量数据
