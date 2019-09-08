@@ -5,7 +5,7 @@ import config
 import logging
 import json
 import time
-from model import Website, Traffic
+from model import Website, Traffic, Threat
 
 logger = logging.getLogger(config.APP_NAME)
 
@@ -43,3 +43,9 @@ def define_route(app):
                   .order_by(Traffic.dt)
         return obj_array_to_json(traffic, 'traffic')
             
+    @app.route('/threat', method='GET')
+    def get_threat(db):
+        threats = db.query(Threat)\
+                   .order_by(Threat.no)
+        return obj_array_to_json(threats, 'threats')
+

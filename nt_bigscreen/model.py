@@ -50,5 +50,23 @@ class Traffic(Base, JsonObj):
     def __repr__(self):
         return("<Traffic('%s', %.2f)>"
             % (self.dt, self.bytes))
- 
-  
+
+class Threat(Base, JsonObj):
+    __tablename__ = "threat"
+    id = Column(Integer, Sequence('seq_pk'), primary_key=True)
+    ip = Column(String(50), nullable=False)
+    no = Column(Integer, nullable=False)
+    server_group = Column(String(50), nullable=False)
+    threat = Column(String(500), nullable=False)
+    serverity = Column(String(100), nullable=False)
+
+    def __init__(self, ip='', no=0, server_group='', threat='', serverity=''):
+        self.ip = ip
+        self.no = no
+        self.server_group = server_group
+        self.threat = threat
+        self.serverity = serverity 
+
+    def __repr__(self):
+        return("<Threat('%s', %d, '%s', '%s', '%s')"
+            % (self.ip, self.no, self.server_group, self.threat, self.serverity))

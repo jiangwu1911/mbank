@@ -1,0 +1,10 @@
+insert into threat(ip, no, server_group, threat, serverity) values('50.88.251.74', 1, '50段', '永恒之蓝, WannaCry, SMB扫描', '高');
+insert into threat(ip, no, server_group, threat, serverity) values('50.88.224.62', 2, '50段', '永恒之蓝, WannaCry', '高');
+insert into threat(ip, no, server_group, threat, serverity) values('50.88.1.232',  3, '50段', '永恒之蓝, SMB扫描, 漏洞探测', '高');
+insert into threat(ip, no, server_group, threat, serverity) values('50.88.1.135',  4, '50段', '永恒之蓝, SMB扫描, 漏洞探测', '高');
+insert into threat(ip, no, server_group, threat, serverity) values('50.88.2.253',  5, '50段', '永恒之蓝, SMB扫描, 漏洞探测', '高');
+insert into threat(ip, no, server_group, threat, serverity) values('50.89.161.28', 6, '-', '永恒之蓝, WannaCry, SMB扫描', '高');
+insert into threat(ip, no, server_group, threat, serverity) values('10.36.17.8',   7, '-', '永恒之蓝, 虚拟货币挖矿, WannaCry', '高');
+insert into threat(ip, no, server_group, threat, serverity) values('10.36.1.10',   8, '-', '飞客蠕虫, 虚拟货币挖矿, Morto...', '高');
+insert into threat(ip, no, server_group, threat, serverity) values('10.36.1.100',  9, '-', '永恒之蓝, Ramnit, WannaCry', '高');
+insert into threat(ip, no, server_group, threat, serverity) values('10.36.40.6',  10, '-', '永恒之蓝, 虚拟货币挖矿, WannaCry', '高');
