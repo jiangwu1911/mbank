@@ -101,14 +101,14 @@ if __name__ == "__main__":
     init_log(logger)
     Watcher()
 
-    # 生成测试流量数据
-    t = threading.Thread(target=generate_test_traffic_data)
-    t.start()
-
     bottle.ERROR_PAGE_TEMPLATE = """{"error": {"message": "{{e.body}}", "code": "{{e._status_code}}"}}"""
     app = Bottle()
     install_db_plugin(app)
     controller.define_route(app)
+
+    # 生成测试流量数据
+    t = threading.Thread(target=generate_test_traffic_data)
+    t.start()
 
     logger.info("Server started")
     httpserver.serve(app, host="0.0.0.0", port=8080, threadpool_workers=30, request_queue_size=20)
