@@ -70,3 +70,45 @@ class Threat(Base, JsonObj):
     def __repr__(self):
         return("<Threat('%s', %d, '%s', '%s', '%s')"
             % (self.ip, self.no, self.server_group, self.threat, self.serverity))
+
+class Sysinfo(Base, JsonObj):
+    __tablename__ = "sysinfo"
+    id = Column(Integer, Sequence('seq_pk'), primary_key=True)
+    uptime = Column(Integer, nullable=False)
+    pct_cpu = Column(Integer, nullable=False)
+    pct_memory = Column(Integer, nullable=False)
+    pct_disk = Column(Integer, nullable=False)
+    total_event = Column(Integer, nullable=False)
+    handled_event = Column(Integer, nullable=False)
+    pending_event = Column(Integer, nullable=False)
+    score = Column(Integer, nullable=False)
+    total_server = Column(Integer, nullable=False)
+    total_client = Column(Integer, nullable=False)
+    total_system = Column(Integer, nullable=False)
+    server_with_problem = Column(Integer, nullable=False)
+    client_with_problem = Column(Integer, nullable=False)
+    system_with_problem = Column(Integer, nullable=False)
+
+    def __init__(self, uptime=0, pct_cpu=0, pct_memory=0, pct_disk=0, total_event=0,
+                 handled_event=0, pending_event=0, score=0, total_server=0, total_client=0,
+                 total_system=0, server_with_problem=0, client_with_problem=0, system_with_problem=0):
+        self.uptime = uptime
+        self.pct_cpu = pct_cpu
+        self.pct_memory = pct_memory
+        self.pct_disk = pct_disk
+        self.total_event = total_event
+        self.handled_event = handled_event
+        self.pending_event = pending_event
+        self.score = score
+        self.total_server = total_server
+        self.total_client = total_client
+        self.total_system = total_system
+        self.server_with_problem = server_with_problem
+        self.client_with_problem = client_with_problem
+        self.system_with_problem = system_with_problem
+
+    def __repr__(self):
+        return("<Threat(%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d)"
+            % (self.uptime, self.pct_cpu, self.pct_memory, self.pct_disk, self.total_event,
+               self.handled_event, self.pending_event, self.score, self.total_server, self.total_client, 
+               self.total_system, self.server_with_problem, self.client_with_problem, self.system_with_problem))

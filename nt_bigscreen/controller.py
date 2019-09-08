@@ -5,7 +5,7 @@ import config
 import logging
 import json
 import time
-from model import Website, Traffic, Threat
+from model import Website, Traffic, Threat, Sysinfo
 
 logger = logging.getLogger(config.APP_NAME)
 
@@ -14,6 +14,9 @@ def obj_array_to_json(results, name):
     for item in results:
         items.append(item.to_dict())
     return {name: items}
+
+def obj_to_json(result, name):
+    return {name: result.to_dict()}
 
 
 def define_route(app):
@@ -48,4 +51,9 @@ def define_route(app):
         threats = db.query(Threat)\
                    .order_by(Threat.no)
         return obj_array_to_json(threats, 'threats')
+
+    @app.route('/sysinfo', method='GET')
+    def get_sysinfo(db):
+        sysinfo = db.query(Sysinfo).filter(Sysinfo.uptime>0)
+        return obj_to_json(sysinfo[0], "sysinfo")
 
