@@ -1,0 +1,10 @@
+insert into website(name, bytes_in, bytes_out, bytes_total) values('人像智能识别对比系统', 5075, 169, 4887);
+insert into website(name, bytes_in, bytes_out, bytes_total) values('蓝信企业级安全移动工作平台', 1578, 33, 1544);
+insert into website(name, bytes_in, bytes_out, bytes_total) values('360天擎终端安全管理系统', 1576, 1219, 357);
+insert into website(name, bytes_in, bytes_out, bytes_total) values('江苏刑事侦查专业应用系统', 323, 37, 285);
+insert into website(name, bytes_in, bytes_out, bytes_total) values('警务基础信息工作平台', 304, 8, 296);
+insert into website(name, bytes_in, bytes_out, bytes_total) values('情报平台', 184, 88, 96);
+insert into website(name, bytes_in, bytes_out, bytes_total) values('山海经纬联网地图服务', 66, 10, 55);
+insert into website(name, bytes_in, bytes_out, bytes_total) values('海量数据分析', 66, 10, 55);
+insert into website(name, bytes_in, bytes_out, bytes_total) values('南通公安官网', 59, 41, 18);
+insert into website(name, bytes_in, bytes_out, bytes_total) values('公安信息网_终端安全服务助手', 29, 9, 19);

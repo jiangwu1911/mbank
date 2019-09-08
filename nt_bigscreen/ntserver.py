@@ -1,3 +1,4 @@
+# coding: utf-8
 import bottle
 from bottle import route, run, request, Bottle
 from paste import httpserver
@@ -12,10 +13,12 @@ import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from bottle.ext.sqlalchemy import SQLAlchemyPlugin
+import random
 
 import config
 import controller
 import model
+from model import Traffic
 
 VERSION = "0.1"
 
@@ -51,9 +54,10 @@ def install_db_plugin(app):
     plugin = SQLAlchemyPlugin(engine,
                               model.Base.metadata,
                               create=True,
-                              commit=False,
+                              commit=True,
                               create_session=create_session)
     app.install(plugin)
+
 
 class Watcher():
     def __init__(self):
@@ -76,9 +80,30 @@ class Watcher():
         except OSError:
             pass
 
+
+def generate_test_traffic_data():
+    engine = create_db_engine()
+    Session = sessionmaker(engine)
+    db = Session()
+    
+    while(1):
+        t = time.time()
+        traffic = Traffic(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t)), 
+                          random.randint(50, 100))
+        db.add(traffic)
+        db.commit()
+        time.sleep(5)
+
+    db.close() 
+
+
 if __name__ == "__main__":
     init_log(logger)
     Watcher()
+
+    # 生成测试流量数据
+    t = threading.Thread(target=generate_test_traffic_data)
+    t.start()
 
     bottle.ERROR_PAGE_TEMPLATE = """{"error": {"message": "{{e.body}}", "code": "{{e._status_code}}"}}"""
     app = Bottle()
