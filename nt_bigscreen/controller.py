@@ -33,11 +33,13 @@ def define_route(app):
 
     @app.route('/traffic', method='GET')
     def get_traffic(db):
-        range = int(request.query.get('range'))
+        range = request.query.get('range')
 
-        # 如果没传begin,end参数, end用当前时间, 显示5分钟的数据
+        # 如果没传range参数, 向前查询5分钟
         if range is None:
-             range = 300
+            range = 300
+        else:
+            range = int(range)
 
         begin = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()-range))
         end = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
