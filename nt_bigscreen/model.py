@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, Sequence, String, Text, DateTime, Unicode
+from sqlalchemy import Column, Integer, Float, Sequence, String, Text, DateTime, Unicode, Index
 from sqlalchemy.ext.declarative import declarative_base
 import datetime
 import config
@@ -22,20 +22,23 @@ class JsonObj():
 class Website(Base, JsonObj): 
     __tablename__ = "website"
     id =  Column(Integer, Sequence('seq_pk'), primary_key=True)
+    tsearch = Column(Integer, default=0, nullable=False)
     name = Column(String(100), nullable=False)
     bytes_in = Column(Integer, default=0, nullable=False)
     bytes_out = Column(Integer, default=0, nullable=False)
     bytes_total = Column(Integer, default=0, nullable=False)
+    __table_args__ = (Index('index01', 'tsearch'),)
 
-    def __init__(self, name='', requests=0):
+    def __init__(self, tsearch=0, name='', bytes_in=0, bytes_out=0, bytes_total=0):
+        self.tsearch = tsearch
         self.name = name
         self.bytes_in = bytes_in
         self.bytes_out = bytes_out
         self.bytes_total = bytes_total
 
     def __repr__(self):
-        return("<Website('%s', %d, %d, %d)>" 
-            % (self.name, self.bytes_in, self.bytes_out, self.bytes_total))
+        return("<Website(%d, '%s', %d, %d, %d)>" 
+            % (self.tsearch, self.name, self.bytes_in, self.bytes_out, self.bytes_total))
 
 class Traffic(Base, JsonObj):
     __tablename__ = "traffic"

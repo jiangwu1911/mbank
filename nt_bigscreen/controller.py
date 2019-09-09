@@ -1,6 +1,6 @@
 # coding: utf-8
 from bottle import route, get, post, delete, request, response, hook, static_file, redirect
-from sqlalchemy import desc
+from sqlalchemy import desc, func
 import config
 import logging
 import json
@@ -27,19 +27,21 @@ def define_route(app):
 
     @app.route('/website', method='GET')
     def get_website(db):
+        t = db.query(func.max(Website.tsearch).label("max_tsearch")).subquery('t') 
         websites = db.query(Website)\
-                   .order_by(desc(Website.bytes_total))
+                   .filter(Website.tsearch == t.c.max_tsearch)\
+                   .order_by(Website.bytes_total) 
         return obj_array_to_json(websites, 'websites')
 
     @app.route('/traffic', method='GET')
     def get_traffic(db):
         range = request.query.get('range')
 
-        # 如果没传range参数, 向前查询5分钟
+        # 如果没传begin,end参数, end用当前时间, 显示5分钟的数据
         if range is None:
-            range = 300
+             range = 300
         else:
-            range = int(range)
+             range = int(range)
 
         begin = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()-range))
         end = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
