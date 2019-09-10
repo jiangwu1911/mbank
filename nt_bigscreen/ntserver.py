@@ -3,8 +3,6 @@ import bottle
 from bottle import route, run, request, response, Bottle
 from paste import httpserver
 import time
-import socket
-import json
 import threading
 import os
 import signal
@@ -13,12 +11,12 @@ import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from bottle.ext.sqlalchemy import SQLAlchemyPlugin
-import random
 
 import config
 import controller
 import model
 from model import Traffic
+from testdata import generate_test_data
 
 VERSION = "0.1"
 
@@ -99,22 +97,6 @@ class EnableCors(object):
         return _enable_cors
 
 
-def generate_test_traffic_data():
-    engine = create_db_engine()
-    Session = sessionmaker(engine)
-    db = Session()
-    
-    while(1):
-        t = time.time()
-        traffic = Traffic(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t)), 
-                          random.randint(50, 100))
-        db.add(traffic)
-        db.commit()
-        time.sleep(5)
-
-    db.close() 
-
-
 if __name__ == "__main__":
     init_log(logger)
     Watcher()
@@ -126,7 +108,7 @@ if __name__ == "__main__":
     controller.define_route(app)
 
     # 生成测试流量数据
-    t = threading.Thread(target=generate_test_traffic_data)
+    t = threading.Thread(target=generate_test_data)
     t.start()
 
     logger.info("Server started")
