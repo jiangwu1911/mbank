@@ -56,7 +56,7 @@ def generate_test_data():
     db = Session()
 
     while(1):
-        generate_test_traffic_data(db)
+        #generate_test_traffic_data(db)
         generate_test_sysinfo_data(db)
         time.sleep(5)
 
