@@ -56,6 +56,22 @@ class Protocol(Base, JsonObj):
         return("<Protocol(%d, '%s', %d)>"
             % (self.tsearch, self.name, self.bytes))
 
+class Region(Base, JsonObj):
+    __tablename__ = "region"
+    id =  Column(Integer, Sequence('seq_pk'), primary_key=True)
+    tsearch = Column(Integer, default=0, nullable=False)
+    name = Column(String(100), nullable=False)
+    bytes = Column(Integer, default=0, nullable=False)
+
+    def __init__(self, tsearch=0, name='', bytes=0):
+        self.tsearch = tsearch
+        self.name = name
+        self.bytes = bytes
+
+    def __repr__(self):
+        return("<Region(%d, '%s', %d)>"
+            % (self.tsearch, self.name, self.bytes))
+
 class HTTPClient(Base, JsonObj):
     __tablename__ = "httpclient"
     id =  Column(Integer, Sequence('seq_pk'), primary_key=True)

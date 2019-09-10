@@ -1,0 +1,10 @@
+insert into region(tsearch, name, bytes) values(1568104917, '通州', 8516);
+insert into region(tsearch, name, bytes) values(1568104917, '海安', 5789);
+insert into region(tsearch, name, bytes) values(1568104917, '海门', 2921);
+insert into region(tsearch, name, bytes) values(1568104917, '如皋', 2466);
+insert into region(tsearch, name, bytes) values(1568104917, '市局警务云', 2078);
+insert into region(tsearch, name, bytes) values(1568104917, '启动', 1732);
+insert into region(tsearch, name, bytes) values(1568104917, '港闸', 1548);
+insert into region(tsearch, name, bytes) values(1568104917, '崇川', 1322);
+insert into region(tsearch, name, bytes) values(1568104917, '3号楼', 1071);
+insert into region(tsearch, name, bytes) values(1568104917, '交警支队', 1060);
