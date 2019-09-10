@@ -1,0 +1,10 @@
+insert into protocol(tsearch, name, bytes) values(1568104917, 'rtp', 884);
+insert into protocol(tsearch, name, bytes) values(1568104917, 'tcp', 390);
+insert into protocol(tsearch, name, bytes) values(1568104917, 'udp', 212);
+insert into protocol(tsearch, name, bytes) values(1568104917, 'tns', 101);
+insert into protocol(tsearch, name, bytes) values(1568104917, 'http', 78);
+insert into protocol(tsearch, name, bytes) values(1568104917, 'ssl', 13);
+insert into protocol(tsearch, name, bytes) values(1568104917, 'soap', 6);
+insert into protocol(tsearch, name, bytes) values(1568104917, 'dns', 4);
+insert into protocol(tsearch, name, bytes) values(1568104917, 'rtcp', 0 );
+insert into protocol(tsearch, name, bytes) values(1568104917, 'snmp', 0);

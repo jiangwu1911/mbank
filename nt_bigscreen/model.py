@@ -40,6 +40,22 @@ class Website(Base, JsonObj):
         return("<Website(%d, '%s', %d, %d, %d)>" 
             % (self.tsearch, self.name, self.bytes_in, self.bytes_out, self.bytes_total))
 
+class Protocol(Base, JsonObj):
+    __tablename__ = "protocol"
+    id =  Column(Integer, Sequence('seq_pk'), primary_key=True)
+    tsearch = Column(Integer, default=0, nullable=False)
+    name = Column(String(100), nullable=False)
+    bytes = Column(Integer, default=0, nullable=False)
+
+    def __init__(self, tsearch=0, name='', bytes=0):
+        self.tsearch = tsearch
+        self.name = name
+        self.bytes = bytes
+
+    def __repr__(self):
+        return("<Protocol(%d, '%s', %d)>"
+            % (self.tsearch, self.name, self.bytes))
+
 class HTTPClient(Base, JsonObj):
     __tablename__ = "httpclient"
     id =  Column(Integer, Sequence('seq_pk'), primary_key=True)
