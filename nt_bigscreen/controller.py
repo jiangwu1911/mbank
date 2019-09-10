@@ -6,6 +6,8 @@ import logging
 import json
 import time
 from model import Website, Traffic, Threat, Sysinfo, HTTPClient, Protocol, Region
+from model import HttpConnectionNumber, HttpResponseTime
+from model import DbConnectionNumber, DbResponseTime
 
 logger = logging.getLogger(config.APP_NAME)
 
@@ -17,6 +19,19 @@ def obj_array_to_json(results, name):
 
 def obj_to_json(result, name):
     return {name: result.to_dict()}
+
+def get_range(request):
+    range = request.query.get('range')
+
+    # 如果没传begin,end参数, end用当前时间, 显示5分钟的数据
+    if range is None:
+         range = 300
+    else:
+         range = int(range)
+
+    begin = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()-range))
+    end = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
+    return (begin,end)
 
 
 def define_route(app):
@@ -59,21 +74,44 @@ def define_route(app):
 
     @app.route('/traffic', method='GET')
     def get_traffic(db):
-        range = request.query.get('range')
-
-        # 如果没传begin,end参数, end用当前时间, 显示5分钟的数据
-        if range is None:
-             range = 300
-        else:
-             range = int(range)
-
-        begin = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()-range))
-        end = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
-
-        traffic = db.query(Traffic).filter(Traffic.dt>begin, Traffic.dt<end)\
+        (begin, end) = get_range(request)
+        traffic = db.query(Traffic)\
+                  .filter(Traffic.dt>begin, Traffic.dt<end)\
                   .order_by(Traffic.dt)
         return obj_array_to_json(traffic, 'traffic')
             
+    @app.route('/http_connection_number', method='GET')
+    def get_http_conns(db):
+        (begin, end) = get_range(request)
+        data = db.query(HttpConnectionNumber)\
+               .filter(HttpConnectionNumber.dt>begin, HttpConnectionNumber.dt<end)\
+               .order_by(HttpConnectionNumber.dt)
+        return obj_array_to_json(data, 'http_connection_number')
+            
+    @app.route('/http_response_time', method='GET')
+    def get_http_resp(db):
+        (begin, end) = get_range(request)
+        data = db.query(HttpResponseTime)\
+               .filter(HttpResponseTime.dt>begin, HttpResponseTime.dt<end)\
+               .order_by(HttpResponseTime.dt)
+        return obj_array_to_json(data, 'http_response_time')
+            
+    @app.route('/db_connection_number', method='GET')
+    def get_db_conns(db):
+        (begin, end) = get_range(request)
+        data = db.query(DbConnectionNumber)\
+               .filter(DbConnectionNumber.dt>begin, DbConnectionNumber.dt<end)\
+               .order_by(DbConnectionNumber.dt)
+        return obj_array_to_json(data, 'db_connection_number')
+
+    @app.route('/db_response_time', method='GET')
+    def get_db_resp(db):
+        (begin, end) = get_range(request)
+        data = db.query(DbResponseTime)\
+               .filter(DbResponseTime.dt>begin, DbResponseTime.dt<end)\
+               .order_by(DbResponseTime.dt)
+        return obj_array_to_json(data, 'db_response_time')
+
     @app.route('/threat', method='GET')
     def get_threat(db):
         threats = db.query(Threat)\

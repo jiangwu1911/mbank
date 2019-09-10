@@ -46,6 +46,7 @@ class Protocol(Base, JsonObj):
     tsearch = Column(Integer, default=0, nullable=False)
     name = Column(String(100), nullable=False)
     bytes = Column(Integer, default=0, nullable=False)
+    __table_args__ = (Index('index01', 'tsearch'),)
 
     def __init__(self, tsearch=0, name='', bytes=0):
         self.tsearch = tsearch
@@ -62,6 +63,7 @@ class Region(Base, JsonObj):
     tsearch = Column(Integer, default=0, nullable=False)
     name = Column(String(100), nullable=False)
     bytes = Column(Integer, default=0, nullable=False)
+    __table_args__ = (Index('index01', 'tsearch'),)
 
     def __init__(self, tsearch=0, name='', bytes=0):
         self.tsearch = tsearch
@@ -98,6 +100,7 @@ class Traffic(Base, JsonObj):
     id =  Column(Integer, Sequence('seq_pk'), primary_key=True)
     dt = Column(String(100), nullable=False)
     bytes = Column(Float, default=0, nullable=False)
+    __table_args__ = (Index('index01', 'dt'),)
 
     def __init__(self, dt='', bytes=0):
         self.dt = dt
@@ -106,6 +109,66 @@ class Traffic(Base, JsonObj):
     def __repr__(self):
         return("<Traffic('%s', %.2f)>"
             % (self.dt, self.bytes))
+
+class HttpConnectionNumber(Base, JsonObj):
+    __tablename__ = "http_connection_number"
+    id =  Column(Integer, Sequence('seq_pk'), primary_key=True)
+    dt = Column(String(100), nullable=False)
+    conns = Column(Integer, default=0, nullable=False)
+    __table_args__ = (Index('index01', 'dt'),)
+
+    def __init__(self, dt='', conns=0):
+        self.dt = dt
+        self.conns = conns
+
+    def __repr__(self):
+        return("<HttpConnectionNumber('%s', %d)>"
+            % (self.dt, self.conns))
+
+class HttpResponseTime(Base, JsonObj):
+    __tablename__ = "http_response_time"
+    id =  Column(Integer, Sequence('seq_pk'), primary_key=True)
+    dt = Column(String(100), nullable=False)
+    resptime = Column(Float, default=0, nullable=False)
+    __table_args__ = (Index('index01', 'dt'),)
+
+    def __init__(self, dt='', resptime=0):
+        self.dt = dt
+        self.resptime = resptime
+
+    def __repr__(self):
+        return("<HttpResponseTime('%s', %.2f)>"
+            % (self.dt, self.resptime))
+
+class DbConnectionNumber(Base, JsonObj):
+    __tablename__ = "db_connection_number"
+    id =  Column(Integer, Sequence('seq_pk'), primary_key=True)
+    dt = Column(String(100), nullable=False)
+    conns = Column(Integer, default=0, nullable=False)
+    __table_args__ = (Index('index01', 'dt'),)
+
+    def __init__(self, dt='', conns=0):
+        self.dt = dt
+        self.conns = conns
+
+    def __repr__(self):
+        return("<DbConnectionNumber('%s', %d)>"
+            % (self.dt, self.conns))
+
+class DbResponseTime(Base, JsonObj):
+    __tablename__ = "db_response_time"
+    id =  Column(Integer, Sequence('seq_pk'), primary_key=True)
+    dt = Column(String(100), nullable=False)
+    resptime = Column(Float, default=0, nullable=False)
+    __table_args__ = (Index('index01', 'dt'),)
+
+    def __init__(self, dt='', resptime=0):
+        self.dt = dt
+        self.resptime = resptime
+
+    def __repr__(self):
+        return("<DbResponseTime('%s', %.2f)>"
+            % (self.dt, self.resptime))
 
 class Threat(Base, JsonObj):
     __tablename__ = "threat"

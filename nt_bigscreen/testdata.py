@@ -6,6 +6,8 @@ from sqlalchemy.orm import sessionmaker
 import random
 
 from model import Traffic, Sysinfo
+from model import HttpConnectionNumber, HttpResponseTime
+from model import DbConnectionNumber, DbResponseTime
 import config
 
 def create_db_engine():
@@ -19,9 +21,37 @@ def create_db_engine():
 
 def generate_test_traffic_data(db):
     t = time.time()
-    traffic = Traffic(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t)),
+    item = Traffic(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t)),
                       random.randint(50, 100))
-    db.add(traffic)
+    db.add(item)
+    db.commit()
+
+def generate_test_http_conn(db):
+    t = time.time()
+    item = HttpConnectionNumber(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t)),
+                      random.randint(5000, 100000))
+    db.add(item)
+    db.commit()
+
+def generate_test_http_resp(db):
+    t = time.time()
+    item = HttpResponseTime(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t)),
+                      random.randint(4, 40)/10.0)
+    db.add(item)
+    db.commit()
+
+def generate_test_db_conn(db):
+    t = time.time()
+    item = DbConnectionNumber(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t)),
+                      random.randint(500, 10000))
+    db.add(item)
+    db.commit()
+
+def generate_test_db_resp(db):
+    t = time.time()
+    item = DbResponseTime(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t)),
+                      random.randint(5, 10)/10.0)
+    db.add(item)
     db.commit()
 
 def get_uptime():
@@ -56,8 +86,15 @@ def generate_test_data():
     db = Session()
 
     while(1):
-        #generate_test_traffic_data(db)
+        generate_test_traffic_data(db)
         generate_test_sysinfo_data(db)
+
+        generate_test_http_conn(db)
+        generate_test_http_resp(db)
+
+        generate_test_db_conn(db)
+        generate_test_db_resp(db)
+
         time.sleep(5)
 
     db.close()
