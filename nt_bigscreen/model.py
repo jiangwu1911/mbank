@@ -22,7 +22,7 @@ class JsonObj():
 class Website(Base, JsonObj): 
     __tablename__ = "website"
     id =  Column(Integer, Sequence('seq_pk'), primary_key=True)
-    tsearch = Column(String(100), default=0, nullable=False)
+    tsearch = Column(Integer, default=0, nullable=False)
     name = Column(String(100), nullable=False)
     bytes_in = Column(Integer, default=0, nullable=False)
     bytes_out = Column(Integer, default=0, nullable=False)
@@ -43,7 +43,7 @@ class Website(Base, JsonObj):
 class HTTPClient(Base, JsonObj):
     __tablename__ = "httpclient"
     id =  Column(Integer, Sequence('seq_pk'), primary_key=True)
-    tsearch = Column(String(100), default=0, nullable=False)
+    tsearch = Column(Integer, default=0, nullable=False)
     ip = Column(String(100), nullable=False)
     bytes_in = Column(Integer, default=0, nullable=False)
     bytes_out = Column(Integer, default=0, nullable=False)
