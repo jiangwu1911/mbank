@@ -51,9 +51,8 @@ def define_route(app):
         else:
              range = int(range)
 
-        # 流量数据从splunk读出, 有1分钟延迟
-        begin = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()-range-60))
-        end = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()-60))
+        begin = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()-range))
+        end = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
 
         traffic = db.query(Traffic).filter(Traffic.dt>begin, Traffic.dt<end)\
                   .order_by(Traffic.dt)
