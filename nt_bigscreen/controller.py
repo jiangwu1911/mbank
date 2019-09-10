@@ -5,7 +5,7 @@ import config
 import logging
 import json
 import time
-from model import Website, Traffic, Threat, Sysinfo
+from model import Website, Traffic, Threat, Sysinfo, HTTPClient
 
 logger = logging.getLogger(config.APP_NAME)
 
@@ -30,8 +30,16 @@ def define_route(app):
         t = db.query(func.max(Website.tsearch).label("max_tsearch")).subquery('t') 
         websites = db.query(Website)\
                    .filter(Website.tsearch == t.c.max_tsearch)\
-                   .order_by(Website.bytes_total) 
+                   .order_by(desc(Website.bytes_total))
         return obj_array_to_json(websites, 'websites')
+
+    @app.route('/httpclient', method='GET')
+    def get_httpclient(db):
+        t = db.query(func.max(HTTPClient.tsearch).label("max_tsearch")).subquery('t')
+        httpclients = db.query(HTTPClient)\
+                   .filter(HTTPClient.tsearch == t.c.max_tsearch)\
+                   .order_by(desc(HTTPClient.bytes_total))
+        return obj_array_to_json(httpclients, 'httpclients')
 
     @app.route('/traffic', method='GET')
     def get_traffic(db):

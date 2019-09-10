@@ -22,7 +22,7 @@ class JsonObj():
 class Website(Base, JsonObj): 
     __tablename__ = "website"
     id =  Column(Integer, Sequence('seq_pk'), primary_key=True)
-    tsearch = Column(Integer, default=0, nullable=False)
+    tsearch = Column(String(100), default=0, nullable=False)
     name = Column(String(100), nullable=False)
     bytes_in = Column(Integer, default=0, nullable=False)
     bytes_out = Column(Integer, default=0, nullable=False)
@@ -39,6 +39,27 @@ class Website(Base, JsonObj):
     def __repr__(self):
         return("<Website(%d, '%s', %d, %d, %d)>" 
             % (self.tsearch, self.name, self.bytes_in, self.bytes_out, self.bytes_total))
+
+class HTTPClient(Base, JsonObj):
+    __tablename__ = "httpclient"
+    id =  Column(Integer, Sequence('seq_pk'), primary_key=True)
+    tsearch = Column(String(100), default=0, nullable=False)
+    ip = Column(String(100), nullable=False)
+    bytes_in = Column(Integer, default=0, nullable=False)
+    bytes_out = Column(Integer, default=0, nullable=False)
+    bytes_total = Column(Integer, default=0, nullable=False)
+    __table_args__ = (Index('index01', 'tsearch'),)
+
+    def __init__(self, tsearch=0, ip='', bytes_in=0, bytes_out=0, bytes_total=0):
+        self.tsearch = tsearch
+        self.ip = ip
+        self.bytes_in = bytes_in
+        self.bytes_out = bytes_out
+        self.bytes_total = bytes_total
+
+    def __repr__(self):
+        return("<Website(%d, '%s', %d, %d, %d)>"
+            % (self.tsearch, self.ip, self.bytes_in, self.bytes_out, self.bytes_total))
 
 class Traffic(Base, JsonObj):
     __tablename__ = "traffic"
