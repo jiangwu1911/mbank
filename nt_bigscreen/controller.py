@@ -33,11 +33,16 @@ def get_range(request):
     end = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
     return (begin,end)
 
+def get_input(req, varname):
+    value = req.forms.get(varname)
+    if value == None:
+        value = req.query.get(varname)
+    return value
 
 def define_route(app):
     @app.route('/', method='GET')
     def index():
-        logger.info("Get homepage.")
+        #logger.info("Get homepage.")
         return("Back server for big screen.")
 
     @app.route('/website', method='GET')
@@ -123,3 +128,13 @@ def define_route(app):
         sysinfo = db.query(Sysinfo).filter(Sysinfo.uptime>0)
         return obj_to_json(sysinfo[0], "sysinfo")
 
+    @app.post('/alarm')
+    def send_alarm(db):
+        postdata = request.json
+        message = postdata['result']['alarm_message']
+        logger.info(message)
+
+        import subprocess
+        cmd = "/home/jwu/nt_bigscreen/sendsms.sh"
+        output = subprocess.check_output([cmd, message])
+        logger.info(output)

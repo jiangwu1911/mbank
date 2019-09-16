@@ -86,14 +86,14 @@ def generate_test_data():
     db = Session()
 
     while(1):
-        generate_test_traffic_data(db)
+        #generate_test_traffic_data(db)
         generate_test_sysinfo_data(db)
 
-        generate_test_http_conn(db)
-        generate_test_http_resp(db)
+        #generate_test_http_conn(db)
+        #generate_test_http_resp(db)
 
-        generate_test_db_conn(db)
-        generate_test_db_resp(db)
+        #generate_test_db_conn(db)
+        #generate_test_db_resp(db)
 
         time.sleep(5)
 
