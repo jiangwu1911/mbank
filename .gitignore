@@ -104,3 +104,4 @@ ENV/
 
 config.py
 *.swp
+nohup.*
