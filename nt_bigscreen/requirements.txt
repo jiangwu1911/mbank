@@ -1,4 +1,4 @@
-bottle==0.12.17
+bottle==0.12.20
 bottle-sqlalchemy==0.4.3
 MySQL-python==1.2.5
 Paste==3.2.0
